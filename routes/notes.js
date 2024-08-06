@@ -1,35 +1,19 @@
-
 var express = require('express');
 var router = express.Router();
+// 接続情報を設定
+const { MongoClient } = require("mongodb");
+const uri = "mongodb+srv://7538yosi:aQU9pi2hjNnakSG7@test.cc6ekms.mongodb.net/?retryWrites=true&w=majority&appName=test";
+const client = new MongoClient(uri);
 
-//レスポンスのデータ（ノート全件）
-const responseObjectDataALL = {
-    testObject1 :{
-        id:1,
-        title: 'ノート１のタイトルです',
-        subtitle: 'ノート１のサブタイトル',
-        bodyText: 'ノート１の本文',
-    },
+router.get('/', async (req, res) => {
+// データベース、コレクションを指定
+const database = client.db('notes');
+const notes = database.collection('notes');
 
-    testObject2 :{
-        id:2,
-        title: 'ノート2のタイトルです',
-        subtitle: 'ノート2のサブタイトル',
-        bodyText: 'ノート2の本文',
-    },
-};
+// idが１のドキュメントを取得
+const query = { id: 2 };
+const note = await notes.findOne(query);
 
-/**
- * メモを全件取得するAPI
- * @returns {object} data
- * @returns {number} data.id - ID
- * @returns {string} data.title -　タイトル
- * @returns {string} data.text -内容
- * */
-
-
-router.get('/', function(req, res, next) {
-  res.json(responseObjectDataALL);
+res.json(note);
 })
-
 module.exports = router;
